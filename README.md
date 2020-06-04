@@ -1,117 +1,114 @@
 # Kubernetes Continuous Deliver Workshop Labs
 
-## Lab 1 - Login to app.harness.io and familiarize yourself with the environment
+Bem vindos ao workshop de CD em Kubernetes com Harness! Para uma melhor experiência, recomendamos o atendimento dos seguintes pré requisitos:
+
+- Criar uma conta Free trial em https://harness.io/try-continuous-delivery-as-a-service-for-free/ . após o término do Trial você continuará utilizando nossa edição community sem data de expiração.
+
+- Conceitos báicos sobre Kubernetes e Linux
+
+- Acesso a um cluster Kubernetes, podendo ser Minikube. Recomendamos pelo menos 16GB de memória com pelo menos 8GB disponível para o K8s, caso você não possua esses recursos, a Google Cloud oferece até US$ 300 de créditos por 1 ano, o que permite a utilização do GKE: https://cloud.google.com/free
 
 
-1. Load up your Chrome web browser and login to https://app.harness.io with the username and password from your lab sheet. 
+## Lab 1 - Login em app.harness.io e se familiarize com o ambiente.
 
-2. Click around and explore the GUI. Please note depending on the user role you have in your own organization's Harness implementation you may not have access to the menus and settings you see here in our training setup. 
 
-5. We will be visiting the Setup menu most often. Click in there and explore the different connectors and setting options. 
+1. Abra seu browser em https://app.harness.io.
 
-6. Ask your instructor if you don't understand the use of any configuration or dashboard.
+2. Explore a interface. 
 
-## Lab 2 - Setup a basic Nginx deployment on our training cluster
+3. Visitaremos o menu "Setup" com mais frequência. Clique lá e explore os diferentes conectores e opções de configuração.
 
-1. Click on the Setup menu in the upper right hand corner of the Harness GUI.
+4. Pergunte ao instrutor se tiver alguma dúvida sobre alguma configuração ou conceito específico!
 
-2. Click on the Add Application button and fill out the information for your new application. Be sure to use your student ID in the name of your application so you can find it easily later.
+## Lab 2 - Instalar o Harness Delegate
+
+O Delegate é o componente que faz a abstração das tecnologias, conexão nas entidades (reposítórios, clusters, etc) e orquestração das atividades relativas a deployments, verificação, governança, etc. No caso do Kubernetes, ele é instalado como um POD em seu cluster. Com isso, não precisamos nos preocupar com o permissionamento dentro do Cluster, já que podemos abstrair e assumir as credenciais de execução.
+
+Para instalar o Delegate, vá até "Setup" - "Harness Delegates". Baixe o Delegate como Kubernetes YAML e aplique em seu cluster. Atenção: A config padrão vem com alocação de 8Gi de memória no Pod, caso seu ambiente seja restrito, diminua para 4Gi. Após a aplicação do YAML em seu cluster você verá seu Delegate disponível na interface.
+
+## Lab 3 - Setup de um deployment básico de NGINX no Kubernetes
+
+1. Clique no menu Setup na parte superior direita.
+
+2. Clique no botão "Add Application" e preencha as informações do sua nova aplicação. 
 
 ![Application Setup](/images/application.jpg)
 
-3. Click submit and Harness will create your new application. Now we can setup the other parts of the deployment.
+3. Clique em Submit e o Harness criará sua nova aplicação. Agora podemos configurar as outras partes da implantação.
 
-4. Click on Services to add our first service to this application, then click on the Add Service button. Give your service a name that includes your student ID (as you did with the application) and set the Deployment Type to Kubernetes.
+4. Clique em Services para adicionar seu primeiro Serviço em sua aplicação. Clique em Add Service. 
+Preencha o nome do seu serviço (Ex: Nginx) e configure o Deployment Type para Kubernetes.
 
 ![Add Service](/images/add_service.jpg)
 
-Click submit. That will take you to the Service Overview.
+Clique em Submit. Você verá a tela de overview do seu novo serviço.
 
-5. In the Service Overview screen click on Add Artifact Source and select Docker Registry. For Source Server select Harness Docker Hub. This is a sample connection to the public hub.docker.com domain setup automatically for harness.io. In non-training testing environments you would most likely delete this connector. For the Docker image name put library/nginx . That will allow us to pick our nginx version when we deploy.
+5.  Na Visão geral do serviço, clique em Add Artifact Source e selecione Docker Registry. Para Source Server, selecione Harness Docker Hub. Essa é uma exemplo de conexão com a configuração do hub.docker.com público da Harness. Para o nome da imagem do Docker, coloque library/nginx. Isso nos permitirá escolher nossa versão do nginx quando a implantação for realizada.
 
 ![Artifact Source](/images/artifact_source.jpg)
 
-Click submit when done. We won't be changing any of the preconfigured yaml at this time. We're just doing a simple first deployment. 
+Clique em submit quando pronto.  Não iremos alterar os Manifests YAML nesse momento, por ser um deployment simples.
 
-6. Click on your application name in the popcorn trail on the upper left of the Harness UI to return to your Application main screen. Then click on Environments to setup an environment to deploy to. 
+6. Clique no nome da aplicação do lado superior esquerdo para voltar para a configuração de Aplicações. Em sua aplicação clique em environments, onde iremos configurar a representação dos ambientes onde o deployment será realizado.
 
-7. Click Add Environment button and give your environment a name that starts with your student ID. Set the environment type to non-production.
+7. Clique em Add Environment e coloque o nome do seu ambiente, e configure o ambiente para non-production. 
 
 ![Environment](/images/environment.jpg)
 
-When you click submit that will take you to the Environment Overview screen. 
+Clique em Submit.
 
-8. Add an Infrastructure Definition. Give it a name that starts with your student ID. Select Kubernetes Cluster for your Cloud Provider Type, and set the deployment type to Kubernetes. Then you can select the Cloud Provider we have setup for this workshop. It will include the name of the city or state the workshop is held in. Finally for Namespace please put your Student ID so your instructor can see your deployment from the command line easily. 
+8. Adicione uma Infrastructure Definition. Selecione Kubernetes Cluster para seu cloud provider, e finalmente preencha o namespace desejado.
 
 ![Infrastructure Definition](/images/infra_def.jpg)
 
-Click submit when done. 
+Clique em submit. 
 
-9. Click back on your application name in the popcorn trail and then click on Workflows. Click Add Workflow.
+9. Volte em sua aplicação, clique em Workflows e adicione um novo workflow.
 
-10. Give your workflow a name that starts with your Student ID. Select rolling deployment for your Deployment Type. Then for Environment, Service, and Infrastructure Definition be sure to pick the ones that start with your Student ID.
+10. Selecione Rolling Deployment, seu ambiente, serviço e definição de infraestrutura.
 
 ![Workflow](/images/workflow.jpg)
 
-When you're done. Click submit.
+Clique em Submit.
 
-11. Now we are ready to do the actual deploy! Click on the Deploy button in the upper right corner of the screen. That will bring up the Start New Deployment dialog box. 
+11. Agora você já está pronto para o deployment! Clique em Deployment no lado superior direito, o que exibirá a tela para iniciar um deplouyment.
 
-12. Since we specified "library/nginx" as our artifact source we now have to pick which version of Nginx we wish to deploy. For our first deploy select an older version 1.9.15 for example. (We will upgrade in the next lab to the current version.)
+12. Como escolhemos "library/nginx" como nosso artefato, agora precisamos selecionar a versão de nginx que desejamos para o deployment.
 
 ![Start New Deployment](/images/start_new.jpg)
 
-It's a good idea for test and training deployments to select Send Notification to Me Only to avoid spamming your coworkers with test deployments. Click Submit to kick off the deployment.
-
-13. Harness will switch to the deployment screen. Click on each box as it appears to see what information Harness provides. Click on the Rollout Deployment box to see the results from the command line on the delegate.
+13. Você pode acompanhar todo o status do deployment em tempo real! Inclusive a exeucução de cada comando no Kubernetes.
 
 ![Live Deployment View](/images/deployment_view.jpg)
 
-Your instructor will also be displaying information from the actual cluster itself on the projector. Look up there to see your namespace appear once your deployment gets going. 
-
-
-## Lab 3 - Upgrade your Nginx deployment to the latest version
-
-1. Click on Setup and go back into your Application. Then go to Deployments and click on the Deployment you just ran. In there click on the Deploy button to deploy a newer version of Nginx.
-
-![Deploy Latest](/images/deploy_latest.jpg) 
-
-Be sure to select the most recent version of Nginx and hit submit.
-
-2. Once the deploy starts click on the Rollout Deployment step and verify the yaml with the latest version of Nginx.
-
-![Check Upgrade](/images/check_upgrade.jpg)
-
 It really can be that easy to upgrade a service!
 
-## Lab 4 - Cleanup the cluster
+## Lab 3 - Cleanup 
 
-1. Now we can run a deployment to delete our previous deployment and leave our training cluster neat and tidy! Go back to Setup screen in the Harness UI and select your application. We're going to create a new Workflow to delete our namespace and the pod inside it. 
-
-2. Click on Workflows and Add Workflow. Give this workflow a different name, but be sure to include your student ID.
+1. Caso você queira deletar o deployment anterior e deixar seu cluster limpo, crie um novo workflow com outro nome
 
 ![Cleanup Workflow](/images/clean_wf.jpg)
 
-Click submit.
+Clique submit.
 
-3. By default Harness put a Rollout Deployment step in for us, but we don't actually need that. Hover your mouse over the Rollout Deployment stage and click the X that appears next to that step to delete it. 
+3. Por padrão, o Harness coloca uma etapa de Rollout Deployment, mas não vamos precisar disso. Passe o mouse sobre o estágio Rollout Deployment e clique no X que aparece ao lado da etapa para excluí-lo.
 
 ![Remove Step](/images/remove_step.jpg)
 
-4. Once that step is gone click on Add Step. This takes you to the Workflow step creation dialog. Click on Kubernetes and then the Delete action. 
+4. Adicione um novo step e clique em "Delete"
 
 ![Delete Step](/images/delete_step.jpg)
 
-Click next.
+Clique em Next.
 
-5. Tell Harness what you want the Kubernetes delete command to delete. We will hardcode our namespace, but you could also use a variable here to Delete whatever namesapce was associated with the deployment. 
+5. Aqui configuraremos o namespace a ser deletado. Nesse caso pode ser hardcoded a nivel de testes mas voce pode usar uma variável para excluir qualquer nome que esteja associado ao deployment de forma dinamica.
 
 ![Configure Delete](/images/configure_delete.jpg)
 
-Click Submit.
+Clique em Submit.
 
-6. Now we can run our delete deployment. Click Deploy in the upper right hand corner. Once the Deploy starts click on the Delete task to watch the command line. You can also verify with the instructor's command line on the screen.
+6. Execute o deplyment.
 
 ![Final Delete](/images/final_delete.jpg)
 
-7. Pat yourself on the back! Labs complete! Job well done!
+7. Parabéns!!!
