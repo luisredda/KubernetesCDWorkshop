@@ -28,6 +28,10 @@ Para instalar o Delegate, vá até "Setup" - "Harness Delegates". Baixe o Delega
 
 ## Lab 3 - Setup de um deployment básico de NGINX no Kubernetes
 
+Após a instalação do Delegate, é necessário criar um Cloud Provider. Clique em "Setup" - "Cloud Providers" e crie um Cloud Provider do tipo "Kubernetes Cluster". Selecione a opção "Inherit from selected Delegate", teste e salve a configuração.
+
+**Agora iremos criar uma nova application na Harness.**
+
 1. Clique no menu Setup na parte superior direita.
 
 2. Clique no botão "Add Application" e preencha as informações do sua nova aplicação. 
